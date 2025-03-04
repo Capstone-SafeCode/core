@@ -1,0 +1,29 @@
+Version compliquée
+
+# - Utilisation d'un fonction dg -> verification de l'argument -> si brute, ok, sinon
+# chercher sa provenance
+# - filename -> user_input -> input()
+# - C'est dangeureux alors rechercher de fonction cl -> si oui, rien, si non alerte
+
+# if body[1].body[0].value.func.value.id = os
+# if body[1].body[0].value.func.attr = remove
+# puis body[1].body[0].args[0].id != Call + "func": "id": "input" (ici Name + [custom name])
+# WARNING 1
+# puis on cherche "_type": "FunctionDef" avec un argument "arg": "filename"
+# puis on cherche "_type": "Expr", "_type": "Call", "id": "delete_file" et son argument args[0].id: "user_input"
+# puis on cherche "_type": "Assign", "id": "user_input" et on regarde sa provenance. Ici == "_type": "Call", "func": "id": "input"
+# WARNING 2
+# recherche partout si utilisation de fonction cl (exemple os.path.normpath) mais ici rien
+# WARNING 3
+# AJOUT A LA LISTE DES FAILLES DETECTEES
+
+Version simple (version actuelle)
+
+# if body[1].body[0].value.func.value.id = os
+# if body[1].body[0].value.func.attr = remove
+# Variable à true
+# if body[2].body[3].value.func.value.value.id = os
+# if body[2].body[3].value.func.value.attr = path
+# if body[2].body[3].value.func.attr = join
+# Variable à true (sinon conséquence du dessous)
+# AJOUT A LA LISTE DES FAILLES DETECTEES
