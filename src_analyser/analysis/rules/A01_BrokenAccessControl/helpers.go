@@ -1,4 +1,4 @@
-package CWE_22
+package A01_BrokenAccessControl
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 
 type IdentityCWE struct {
 	CWEId   string
-	RuleId  int
+	RuleId  string
 	Path    string
 	Line    int
 	Kind    string

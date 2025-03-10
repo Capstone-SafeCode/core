@@ -1,26 +1,26 @@
-package CWE_22
+package A01_BrokenAccessControl
 
 import (
 	"fmt"
 )
 
 // Prends les données du json de la doc, RunCWE22Analysis avec les functions dangereuses puis RunCWE22Analysis avec les fonctions solutions
-func RunCWE22BeforeAnalysis(astRaw interface{}, filename string) {
+func RunBeforeAnalysis(astRaw interface{}, filename string, whichCWE string, whichRule string) {
 	isVulnerable := false
 
-	jsonData, err := loadRules("doc/CWE-22/rule1.json")
+	jsonData, err := loadRules("doc/CWE-" + whichCWE + "/rule" + whichRule + ".json")
 	if err != nil {
 		fmt.Printf("“Error during loading rules : %v\n", err)
 		return
 	}
-	RunCWE22Analysis(astRaw, jsonData.Schema.DangerousFunctions, &isVulnerable, filename, true)
+	RunAnalysis(astRaw, jsonData.Schema.DangerousFunctions, &isVulnerable, filename, true)
 
 	if isVulnerable {
-		RunCWE22Analysis(astRaw, jsonData.Schema.SafeFunctions, &isVulnerable, filename, false)
+		RunAnalysis(astRaw, jsonData.Schema.SafeFunctions, &isVulnerable, filename, false)
 		if isVulnerable {
 			var st IdentityCWE
-			st.CWEId = "22"
-			st.RuleId = 1
+			st.CWEId = whichCWE
+			st.RuleId = whichRule
 			st.Path = filename
 			st.Kind = jsonData.Kind.Text
 			st.ToFixIt = jsonData.ToFixIt.Text
@@ -31,7 +31,7 @@ func RunCWE22BeforeAnalysis(astRaw interface{}, filename string) {
 }
 
 // Extrait les noms des fonctions et leurs path avant de les envoyer à la fonction suivante
-func RunCWE22Analysis(astRaw interface{}, functionsToAnalyse []interface{}, isVulnerable *bool, filename string, bootToSet bool) {
+func RunAnalysis(astRaw interface{}, functionsToAnalyse []interface{}, isVulnerable *bool, filename string, bootToSet bool) {
 	for _, dFunc := range functionsToAnalyse {
 		dFuncList, ok := dFunc.([]interface{})
 		if !ok || len(dFuncList) < 2 {

@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "logging.warning",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "test.test",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ]
+  },
+  "ToFixIt" : {
+    "text" : "Don't show an error"
+  },
+  "Kind" : {
+    "text" : "Leaked information"
+  },
+  "Doc": {
+    "what_is_an_issues": "Description de la vulnérabilité, du danger et de l'impact qu'elle représente",
+    "how_can_i_fix_it": "Exemple de code vulnérable, exemple de code sécurisé, description de comment ça fonctionne",
+    "more_info": "Source et CWE utilisées"
+  }
+}

@@ -1,3 +1,15 @@
 .vscode
 /go-build/
 *.out
+
+to_analyse.txt
+result.json
+v.json
+v2.json
+/uploads/*
+!/uploads/.gitkeep
+/code/
+
+server
+parser
+analyser
