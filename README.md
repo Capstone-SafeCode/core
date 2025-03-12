@@ -1,8 +1,7 @@
 Ouvrir deux terminaux
 
 ## Dans /racine :
-go build -o server ./src_server
-./server
+docker-compose up --build -d
 
 ## Dans /frontend :
-python3 serveur.py
+python3 server.py
