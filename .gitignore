@@ -13,3 +13,5 @@ v2.json
 server
 parser
 analyser
+
+.env

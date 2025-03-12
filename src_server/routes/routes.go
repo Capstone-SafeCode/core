@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 	"test_capstone/src_server/controllers"
+	"test_capstone/src_server/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,9 +27,15 @@ func SetupRouter() *gin.Engine {
 
 	r.POST("/register", controllers.CreateUser)
 	r.POST("/login", controllers.LogUser)
-	r.GET("/users", controllers.GetUsers)
 
-	r.POST("/upload", controllers.UploadFile)
-	r.POST("/analyse", controllers.StartAnalyse)
+	// Routes protégées
+	protected := r.Group("/")
+	protected.Use(middlewares.AuthMiddleware())
+	{
+		protected.GET("/users", controllers.GetUsers)
+		protected.POST("/upload", controllers.UploadFile)
+		protected.POST("/analyse", controllers.StartAnalyse)
+	}
+
 	return r
 }
