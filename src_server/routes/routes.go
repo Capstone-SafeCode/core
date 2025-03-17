@@ -33,6 +33,8 @@ func SetupRouter() *gin.Engine {
 	protected.Use(middlewares.AuthMiddleware())
 	{
 		protected.GET("/users", controllers.GetUsers)
+		protected.GET("/me", controllers.GetMe)
+
 		protected.POST("/upload", controllers.UploadFile)
 		protected.POST("/analyse", controllers.StartAnalyse)
 	}

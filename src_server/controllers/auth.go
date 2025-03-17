@@ -121,3 +121,37 @@ func GetUsers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, users)
 }
+
+func GetMe(c *gin.Context) {
+	userID, exists1 := c.Get("userID")
+
+	if !exists1 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Utilisateur non authentifié"})
+		return
+	}
+
+	objID, err := primitive.ObjectIDFromHex(userID.(string))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID utilisateur invalide"})
+		return
+	}
+
+	var user struct {
+		ID       primitive.ObjectID `json:"id" bson:"_id"`
+		Username string             `json:"username" bson:"username"`
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err = userCollection.FindOne(ctx, bson.M{"_id": objID}).Decode(&user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Utilisateur non trouvé"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"userId":   user.ID.Hex(),
+		"username": user.Username,
+	})
+}
