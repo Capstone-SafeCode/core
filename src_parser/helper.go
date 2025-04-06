@@ -1,4 +1,4 @@
-package main
+package src_parser
 
 import (
 	"fmt"
@@ -6,12 +6,6 @@ import (
 	"sort"
 	"strings"
 )
-
-func help() {
-	fmt.Println("usage: ./parser -path=[f]")
-	fmt.Println("Options corresponding:")
-	fmt.Println("f      : Folder's path from which the analysis will start (ex : src/)")
-}
 
 func contains(slice []string, target string) bool {
 	for _, value := range slice {
@@ -47,23 +41,6 @@ func isItFile(filepath string) (int, string) {
 	} else {
 		// File
 		return 1, getExtension(filepath)
-	}
-}
-
-func writeInTXT(text string) {
-	filename := "to_analyse.txt"
-
-	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		fmt.Printf("Error in openning : %v\n", err)
-		return
-	}
-	defer file.Close()
-
-	_, err = file.WriteString(text)
-	if err != nil {
-		fmt.Printf("Error in writting : %v\n", err)
-		return
 	}
 }
 

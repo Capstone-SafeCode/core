@@ -3,12 +3,11 @@ FROM golang:1.24.1
 
 # Définition du répertoire de travail
 WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
 
 # Copier le code source
 COPY . .
-
-# Installer les dépendances
-RUN go mod download
 
 # Exposer le port 8080
 EXPOSE 8080

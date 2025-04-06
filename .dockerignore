@@ -1,0 +1,12 @@
+**
+
+!ast/**
+!doc/**
+!src_analyser/**
+!src_parser/**
+!src_server/**
+!.env
+!docker-compose.yml
+!Dockerfile
+!go.mod
+!go.sum

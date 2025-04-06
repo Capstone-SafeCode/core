@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 	"test_capstone/src_server/controllers"
-	"test_capstone/src_server/middleware"
+	middlewares "test_capstone/src_server/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,7 +36,7 @@ func SetupRouter() *gin.Engine {
 		protected.GET("/me", controllers.GetMe)
 
 		protected.POST("/upload", controllers.UploadFile)
-		protected.POST("/analyse", controllers.StartAnalyse)
+		protected.POST("/analyse", controllers.Analyse)
 	}
 
 	return r

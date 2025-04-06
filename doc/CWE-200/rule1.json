@@ -2,13 +2,13 @@
   "schema": {
     "dangerous_functions": [
       [
-        "logging.warning",
-        ["value.func.value.id", "value.func.attr"]
+        "traceback.format_exc",
+        ["value.args.0.func.value.id", "value.args.0.func.attr"]
       ]
     ],
     "safe_functions": [
       [
-        "test.test",
+        "logging.warning",
         ["value.func.value.id", "value.func.attr"]
       ]
     ]

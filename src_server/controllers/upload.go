@@ -13,6 +13,12 @@ import (
 
 // Route /upload
 func UploadFile(c *gin.Context) {
+	userName := c.PostForm("userName")
+	if userName == "" {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Username missing"})
+		return
+	}
+
 	file, header, err := c.Request.FormFile("codeFile")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get uploaded file"})
@@ -20,7 +26,7 @@ func UploadFile(c *gin.Context) {
 	}
 	defer file.Close()
 
-	uploadDir := "uploads"
+	uploadDir := "uploads/" + userName
 	os.RemoveAll(uploadDir)
 	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})

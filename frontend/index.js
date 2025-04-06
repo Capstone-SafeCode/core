@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("codeFile", file);
 
         try {
-            const response = await fetch("http://localhost:8069/upload", {
+            const response = await fetch("http://host.docker.internal:8080/upload", {
                 method: "POST",
                 body: formData
             });
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const response = await fetch("http://localhost:8069/start_analyse", {
+        const response = await fetch("http://host.docker.internal:8080/analyse", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

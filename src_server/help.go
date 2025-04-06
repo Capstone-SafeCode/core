@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -23,17 +22,4 @@ func LoadJsonFromResultFile(filepath string) ([]gin.H, error) {
 	}
 
 	return data, nil
-}
-
-func getUploadsName() string {
-	filepath := "uploads"
-	files, err := os.ReadDir(filepath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, file := range files {
-		return file.Name()
-	}
-
-	return ""
 }

@@ -1,5 +1,7 @@
 services:
   api:
+    container_name: core-api
+    image: api:1.0
     build: .
     ports:
       - "8080:8080"

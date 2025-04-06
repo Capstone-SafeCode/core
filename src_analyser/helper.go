@@ -1,7 +1,6 @@
-package main
+package src_analyser
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -51,27 +50,17 @@ func getPyAST(filename string) (interface{}, error) {
 	return raw, nil
 }
 
-func getFilesList(filesList []FileManagement) []FileManagement {
-	filename := "to_analyse.txt"
-	var tempStruc FileManagement
-
-	file, err := os.Open(filename)
-	if err != nil {
-		fmt.Println("Error in to_analyse.txt opening")
-		return []FileManagement{}
-	}
-
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		split := strings.Fields(scanner.Text())
+func getFilesList(filesList []FileManagement, listOfFiles []string) []FileManagement {
+	for _, line := range listOfFiles {
+		split := strings.Fields(line)
 		if len(split) < 2 {
 			continue
 		}
 
-		tempStruc.path = split[0]
-		tempStruc.extension = split[1]
+		tempStruc := FileManagement{
+			path:      split[0],
+			extension: split[1],
+		}
 
 		filesList = append(filesList, tempStruc)
 	}

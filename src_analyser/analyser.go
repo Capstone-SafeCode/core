@@ -1,12 +1,14 @@
-package main
+package src_analyser
 
 import (
 	"fmt"
 	"log"
 	"test_capstone/src_analyser/analysis"
+
+	"github.com/gin-gonic/gin"
 )
 
-func analyseAskedCsFile(filename string) {
+func analyseAskedCsFile(resultJson *[]gin.H, filename string) {
 	return
 	// astRaw, err := getCsAST(filename)
 
@@ -20,36 +22,34 @@ func analyseAskedCsFile(filename string) {
 	// analysis.StartAnalysis(astRaw)
 }
 
-func analyseAskedPyFile(filename string) {
+func analyseAskedPyFile(resultJson *[]gin.H, filename string) {
 	astRaw, err := getPyAST(filename)
 
 	if err != nil {
 		log.Fatalf("Failed to get AST: %v\n", err)
 	}
 
-	analysis.StartAnalysis(astRaw, filename)
+	analysis.StartAnalysis(resultJson, astRaw, filename)
 }
 
-func main() {
+func AnalyseList(listOfFiles []string) []gin.H {
 	var filesList []FileManagement
+	var resultJson []gin.H
 
-	filesList = getFilesList(filesList)
+	filesList = getFilesList(filesList, listOfFiles)
 
-	analyzers := map[string]func(string){
+	analyzers := map[string]func(*[]gin.H, string){
 		"py": analyseAskedPyFile,
 		"cs": analyseAskedCsFile,
 	}
 
-	err := createEmptyJSON("result.json")
-	if err != nil {
-		fmt.Println("Erreur :", err)
-	}
-
 	for _, el := range filesList {
 		if analyzeFunc, ok := analyzers[el.extension]; ok {
-			analyzeFunc(el.path)
+			analyzeFunc(&resultJson, el.path)
 		} else {
 			fmt.Printf("Error unkown extension for '%s'\n", el.path)
 		}
 	}
+
+	return resultJson
 }

@@ -1,12 +1,11 @@
-package main
+package src_parser
 
 import (
-	"flag"
 	"log"
 	"os"
 )
 
-func startSort(filepathList []string, blackList []string) {
+func startSort(finalFilepathList *[]string, filepathList []string, blackList []string) {
 	if len(filepathList) <= 0 {
 		return
 	} else {
@@ -18,7 +17,7 @@ func startSort(filepathList []string, blackList []string) {
 		for _, file := range files {
 			fileType, data := isItFile(filepath + file.Name())
 			if fileType == 1 {
-				writeInTXT(filepath + file.Name() + " " + data + "\n")
+				*finalFilepathList = append(*finalFilepathList, filepath+file.Name()+" "+data+"\n")
 			} else if fileType == 0 && !contains(blackList, filepath) {
 				filepathList = append(filepathList, filepath+file.Name()+"/")
 			}
@@ -26,22 +25,18 @@ func startSort(filepathList []string, blackList []string) {
 		blackList = append(blackList, filepath)
 		index := findItsIndex(filepathList, filepath)
 		filepathList = append(filepathList[:index], filepathList[index+1:]...)
-		startSort(filepathList, blackList)
+		startSort(finalFilepathList, filepathList, blackList)
 	}
 }
 
-func main() {
-	var filepath string
+func ParseFolder(filepath string) []string {
 	var filepathList []string
+	var finalFilepathList []string
 
-	flag.StringVar(&filepath, "path", "default", "Dossier où commence l'analyse")
-	flag.Parse()
-
-	if filepath != "default" && filepath[len(filepath)-1] == '/' {
+	if filepath != "" && filepath[len(filepath)-1] == '/' {
 		filepathList = append(filepathList, filepath)
-		os.Truncate("to_analyse.txt", 0)
-		startSort(filepathList, []string{})
-	} else {
-		help()
+		startSort(&finalFilepathList, filepathList, []string{})
 	}
+
+	return finalFilepathList
 }

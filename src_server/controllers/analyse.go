@@ -1,14 +1,16 @@
 package controllers
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
+
+	analyser "test_capstone/src_analyser"
+	parser "test_capstone/src_parser"
+
+	"github.com/gin-gonic/gin"
 )
 
 func LoadJsonFromResultFile(filepath string) ([]gin.H, error) {
@@ -27,8 +29,9 @@ func LoadJsonFromResultFile(filepath string) ([]gin.H, error) {
 	return data, nil
 }
 
-func getUploadsName() string {
-	filepath := "uploads"
+func getUploadsName(userName string) string {
+	filepath := "uploads/" + userName
+
 	files, err := os.ReadDir(filepath)
 	if err != nil {
 		log.Fatal(err)
@@ -40,31 +43,35 @@ func getUploadsName() string {
 	return ""
 }
 
-// Route /analyse
-func StartAnalyse(c *gin.Context) {
-	uploadsName := "uploads/" + getUploadsName() + "/"
-	if uploadsName == "uploads//" {
+func StartAnalyse(userName string, c *gin.Context) {
+	uploadFolder := getUploadsName(userName)
+	uploadsPath := fmt.Sprintf("uploads/%s/%s/", userName, uploadFolder)
+
+	if uploadFolder == "" || userName == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No valid upload found"})
 		return
 	}
 
-	cmd := exec.Command("./exec.sh", uploadsName)
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
+	listOfFiles := parser.ParseFolder(uploadsPath)
+	fmt.Println(listOfFiles)
+	resultJson := analyser.AnalyseList(listOfFiles)
+	fmt.Println(resultJson)
+	// if err != nil {
+	// 	log.Fatal("Start analyse request err:", err)
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Analysis failed"})
+	// 	return
+	// }
 
-	if err != nil {
-		log.Fatal("Start analyse request err:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Analysis failed"})
+	c.JSON(http.StatusOK, resultJson)
+}
+
+// Route /analyse
+func Analyse(c *gin.Context) {
+	userName := c.PostForm("userName")
+	if userName == "" {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Username missing"})
 		return
 	}
 
-	newJson, err := LoadJsonFromResultFile("result.json")
-	if err != nil {
-		log.Fatal("Error: result.json doesn't exist", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "result.json not found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, newJson)
+	StartAnalyse(userName, c)
 }

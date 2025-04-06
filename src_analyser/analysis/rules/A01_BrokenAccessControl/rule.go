@@ -2,10 +2,13 @@ package A01_BrokenAccessControl
 
 import (
 	"fmt"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Prends les données du json de la doc, RunCWE22Analysis avec les functions dangereuses puis RunCWE22Analysis avec les fonctions solutions
-func RunBeforeAnalysis(astRaw interface{}, filename string, whichCWE string, whichRule string) {
+func RunBeforeAnalysis(resultJson *[]gin.H, astRaw interface{}, filename string, whichCWE string, whichRule string) {
 	isVulnerable := false
 
 	jsonData, err := loadRules("doc/CWE-" + whichCWE + "/rule" + whichRule + ".json")
@@ -18,13 +21,13 @@ func RunBeforeAnalysis(astRaw interface{}, filename string, whichCWE string, whi
 	if isVulnerable {
 		RunAnalysis(astRaw, jsonData.Schema.SafeFunctions, &isVulnerable, filename, false)
 		if isVulnerable {
-			var st IdentityCWE
-			st.CWEId = whichCWE
-			st.RuleId = whichRule
-			st.Path = filename
-			st.Kind = jsonData.Kind.Text
-			st.ToFixIt = jsonData.ToFixIt.Text
-			writeInResult(st)
+			*resultJson = append(*resultJson, gin.H{
+				"CWE":     whichCWE,
+				"RuleId":  whichRule,
+				"Path":    filename,
+				"Kind":    jsonData.Kind.Text,
+				"ToFixIt": jsonData.ToFixIt.Text,
+			})
 			isVulnerable = false
 		}
 	}
@@ -130,13 +133,15 @@ func explorePath(ast interface{}, pathParts []string, functionParts []string) bo
 func findInAST(ast interface{}, key string) interface{} {
 	switch node := ast.(type) {
 	case map[string]interface{}:
+		// Accès classique à une clé
 		if value, exists := node[key]; exists {
 			return value
 		}
 	case []interface{}:
-		for _, item := range node {
-			if result := findInAST(item, key); result != nil {
-				return result
+		// Si la clé est un index (ex: "0"), on l'interprète comme tel
+		if idx, err := strconv.Atoi(key); err == nil {
+			if idx >= 0 && idx < len(node) {
+				return node[idx]
 			}
 		}
 	}
@@ -150,6 +155,19 @@ func matchFunction(ast interface{}, functionParts []string) bool {
 		for _, expected := range functionParts {
 			if strValue == expected {
 				return true
+			}
+		}
+	}
+
+	// Cas spécial : si c’est un map et qu’il a une clé "id" contenant un des noms attendus
+	if nodeMap, ok := ast.(map[string]interface{}); ok {
+		if idVal, ok := nodeMap["id"]; ok {
+			if strID, ok := idVal.(string); ok {
+				for _, expected := range functionParts {
+					if strID == expected {
+						return true
+					}
+				}
 			}
 		}
 	}
