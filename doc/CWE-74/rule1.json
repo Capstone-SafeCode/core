@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "ET.fromstring",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "ET.SubElement",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Avoid string concatenation when generating XML. Use structured APIs like xml.etree.ElementTree to escape content safely."
+  },
+  "Kind": {
+    "text": "Improper Neutralization of Special Elements (CWE-74)"
+  },
+  "Doc": {
+    "what_is_an_issues": "User input is injected directly into XML content without escaping special characters, leading to malformed XML.",
+    "how_can_i_fix_it": "Use XML builder tools like SubElement to handle text injection safely.",
+    "more_info": "https://cwe.mitre.org/data/definitions/74.html"
+  }
+}

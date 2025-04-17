@@ -1,4 +1,4 @@
-package A01_BrokenAccessControl
+package rules
 
 import (
 	"fmt"

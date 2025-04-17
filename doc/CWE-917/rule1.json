@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "eval",
+        ["value.func.id"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "ast.parse",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Avoid using `eval()` on untrusted input. Use AST parsing and validate the expression tree before evaluation."
+  },
+  "Kind": {
+    "text": "Expression Language Injection (CWE-917)"
+  },
+  "Doc": {
+    "what_is_an_issues": "Using eval() directly on user input can allow arbitrary code execution.",
+    "how_can_i_fix_it": "Use `ast.parse()` to safely analyze and validate expressions before evaluating them in a restricted context.",
+    "more_info": "https://cwe.mitre.org/data/definitions/917.html"
+  }
+}

@@ -4,25 +4,24 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 )
 
-func createEmptyJSON(filename string) error {
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
-	if err != nil {
-		return fmt.Errorf("erreur lors de l'ouverture du fichier : %v", err)
-	}
-	defer file.Close()
+// func createEmptyJSON(filename string) error {
+// 	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+// 	if err != nil {
+// 		return fmt.Errorf("erreur lors de l'ouverture du fichier : %v", err)
+// 	}
+// 	defer file.Close()
 
-	_, err = file.WriteString("[]")
-	if err != nil {
-		return fmt.Errorf("erreur lors de l'écriture dans le fichier : %v", err)
-	}
+// 	_, err = file.WriteString("[]")
+// 	if err != nil {
+// 		return fmt.Errorf("erreur lors de l'écriture dans le fichier : %v", err)
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 type FileManagement struct {
 	path      string

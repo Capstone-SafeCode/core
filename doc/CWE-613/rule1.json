@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "session",
+        ["value"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "session.clear",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Track user activity and clear the session after a period of inactivity to enforce session expiration."
+  },
+  "Kind": {
+    "text": "Insufficient Session Expiration (CWE-613)"
+  },
+  "Doc": {
+    "what_is_an_issues": "User sessions remain active indefinitely, exposing accounts to risks if the user forgets to log out.",
+    "how_can_i_fix_it": "Implement session expiration based on inactivity or maximum session lifetime.",
+    "more_info": "https://cwe.mitre.org/data/definitions/613.html"
+  }
+}

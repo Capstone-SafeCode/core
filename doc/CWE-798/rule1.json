@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "external_service_login",
+        ["value.func.id"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "os.getenv",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Avoid hard-coding credentials in your codebase. Use environment variables or a secure vault system to manage secrets."
+  },
+  "Kind": {
+    "text": "Hard-coded Credentials (CWE-798)"
+  },
+  "Doc": {
+    "what_is_an_issues": "Credentials are hard-coded into the source code, which can easily be exposed through code leaks or reverse engineering.",
+    "how_can_i_fix_it": "Use environment variables or a secret management system like Vault or AWS Secrets Manager to store credentials securely.",
+    "more_info": "https://cwe.mitre.org/data/definitions/798.html"
+  }
+}

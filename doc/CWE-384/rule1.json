@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "session",
+        ["value"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "session.clear",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Clear the session or regenerate the session ID after login to prevent session fixation attacks."
+  },
+  "Kind": {
+    "text": "Session Fixation (CWE-384)"
+  },
+  "Doc": {
+    "what_is_an_issues": "The session is reused after login, allowing attackers to fix a session ID beforehand and hijack a user’s session.",
+    "how_can_i_fix_it": "Clear the session or regenerate the session ID after successful authentication to ensure a fresh session.",
+    "more_info": "https://cwe.mitre.org/data/definitions/384.html"
+  }
+}

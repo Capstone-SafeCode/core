@@ -29,7 +29,7 @@ func analyseAskedPyFile(resultJson *[]gin.H, filename string) {
 		log.Fatalf("Failed to get AST: %v\n", err)
 	}
 
-	analysis.StartAnalysis(resultJson, astRaw, filename)
+	analysis.StartPyAnalysis(resultJson, astRaw, filename)
 }
 
 func AnalyseList(listOfFiles []string) []gin.H {

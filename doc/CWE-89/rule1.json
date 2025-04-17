@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "cur.execute",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "cur.execute",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Use parameterized queries with placeholders instead of string formatting in SQL queries."
+  },
+  "Kind": {
+    "text": "SQL Injection (CWE-89)"
+  },
+  "Doc": {
+    "what_is_an_issues": "User input is used directly in a SQL query string, allowing injection attacks.",
+    "how_can_i_fix_it": "Always use parameterized queries to separate code from user input.",
+    "more_info": "https://cwe.mitre.org/data/definitions/89.html"
+  }
+}

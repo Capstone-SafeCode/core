@@ -9,7 +9,7 @@ up:
 	docker-compose up -d
 
 stop:
-	docker-compsoe stop
+	docker-compose stop
 
 down:
 	docker-compose down

@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "fetch_invoice",
+        ["value.func.id"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "user_owns_invoice",
+        ["value.func.id"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Verify that the authenticated user owns or is authorized to access the requested object before returning it."
+  },
+  "Kind": {
+    "text": "Insecure Direct Object Reference (CWE-639)"
+  },
+  "Doc": {
+    "what_is_an_issues": "The application allows access to resources based solely on user-supplied identifiers without verifying ownership.",
+    "how_can_i_fix_it": "Add an authorization check to ensure the current user is allowed to access the object.",
+    "more_info": "https://cwe.mitre.org/data/definitions/639.html"
+  }
+}

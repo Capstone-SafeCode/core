@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "exec",
+        ["value.func.id"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "print",
+        ["value.func.id"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Avoid using `exec()` or `eval()` on user input. If dynamic behavior is needed, use controlled execution with limited built-ins or a custom DSL."
+  },
+  "Kind": {
+    "text": "Code Injection (CWE-94)"
+  },
+  "Doc": {
+    "what_is_an_issues": "User input is executed as code, allowing arbitrary code execution.",
+    "how_can_i_fix_it": "Avoid using exec or eval with user data. Use parsing and validation instead.",
+    "more_info": "https://cwe.mitre.org/data/definitions/94.html"
+  }
+}

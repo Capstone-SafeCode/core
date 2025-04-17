@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "request.args.get",
+        ["value.func.value.value.id", "value.func.value.attr", "value.func.attr"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "escape",
+        ["value.func.id"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Escape HTML content before rendering user input. Use `flask.escape()` or a templating engine like Jinja2."
+  },
+  "Kind": {
+    "text": "Cross-site Scripting (CWE-79)"
+  },
+  "Doc": {
+    "what_is_an_issues": "User input is rendered directly in HTML without sanitization, allowing script injection.",
+    "how_can_i_fix_it": "Escape user input or use auto-escaping templates to prevent HTML/JS injection.",
+    "more_info": "https://cwe.mitre.org/data/definitions/79.html"
+  }
+}

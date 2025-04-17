@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "return True",
+        ["value"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "check_password",
+        ["value.func.id"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Verify credentials properly using a secure authentication mechanism, such as password hashing and comparison with stored values."
+  },
+  "Kind": {
+    "text": "Improper Authentication (CWE-287)"
+  },
+  "Doc": {
+    "what_is_an_issues": "The function blindly returns True, allowing anyone to authenticate without verifying credentials.",
+    "how_can_i_fix_it": "Use secure authentication functions to check usernames and passwords against stored (hashed) credentials.",
+    "more_info": "https://cwe.mitre.org/data/definitions/287.html"
+  }
+}

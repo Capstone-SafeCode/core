@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "request.form",
+        ["value.func.value.id", "value.func.attr"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "CSRFProtect",
+        ["value.func.id"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Enable CSRF protection by using libraries like Flask-WTF and verifying CSRF tokens on sensitive POST routes."
+  },
+  "Kind": {
+    "text": "Cross-Site Request Forgery (CWE-352)"
+  },
+  "Doc": {
+    "what_is_an_issues": "The route allows state-changing POST requests without verifying the origin of the request, making it vulnerable to CSRF.",
+    "how_can_i_fix_it": "Use CSRF tokens to ensure that form submissions come from legitimate users and not from malicious sites.",
+    "more_info": "https://cwe.mitre.org/data/definitions/352.html"
+  }
+}

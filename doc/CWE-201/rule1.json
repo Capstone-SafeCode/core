@@ -1,0 +1,27 @@
+{
+  "schema": {
+    "dangerous_functions": [
+      [
+        "request.args.get",
+        ["value.func.value.value.id", "value.func.value.attr", "value.func.attr"]
+      ]
+    ],
+    "safe_functions": [
+      [
+        "request.form.get",
+        ["value.func.value.value.id", "value.func.value.attr", "value.func.attr"]
+      ]
+    ]
+  },
+  "ToFixIt": {
+    "text": "Avoid using GET for sensitive data like passwords. Use POST and access form data through request.form."
+  },
+  "Kind": {
+    "text": "Information Exposure Through Sent Data (CWE-201)"
+  },
+  "Doc": {
+    "what_is_an_issues": "Sensitive information like passwords is exposed through the URL by using GET parameters. These URLs can be stored in logs, browser history, or intercepted.",
+    "how_can_i_fix_it": "Use POST requests to transmit sensitive data, and access them via request.form instead of request.args.",
+    "more_info": "https://cwe.mitre.org/data/definitions/201.html"
+  }
+}
