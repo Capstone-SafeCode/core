@@ -5,10 +5,14 @@ services:
     build: .
     ports:
       - "8080:8080"
-    depends_on:
-      - mongo
+    volumes:
+      - ./src_server:/app/src_server
+    env_file:
+      - .env
     environment:
       MONGO_URI: "mongodb://mongo:27017/mydatabase"
+    depends_on:
+      - mongo
     restart: always
 
   mongo:

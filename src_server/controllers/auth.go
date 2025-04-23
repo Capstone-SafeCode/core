@@ -34,7 +34,7 @@ func generateJWT(user model.User) (string, error) {
 	return token.SignedString(jwtSecret)
 }
 
-// Route /register (Inscription)
+// Route auth/register (Inscription)
 func CreateUser(c *gin.Context) {
 	var user model.User
 
@@ -68,7 +68,7 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Utilisateur créé avec succès"})
 }
 
-// Route /login (Connexion)
+// Route auth/login (Connexion)
 func LogUser(c *gin.Context) {
 	var user model.User
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -122,6 +122,7 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// Route /me
 func GetMe(c *gin.Context) {
 	userID, exists1 := c.Get("userID")
 

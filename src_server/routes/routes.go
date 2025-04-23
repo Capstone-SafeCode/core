@@ -25,8 +25,12 @@ func SetupRouter() *gin.Engine {
 		c.Next()
 	})
 
-	r.POST("/register", controllers.CreateUser)
-	r.POST("/login", controllers.LogUser)
+	// Routes d'authentification GitHub
+	r.GET("/auth/github", controllers.GitHubLogin)
+	r.GET("/auth/github/callback", controllers.GitHubCallback)
+
+	r.POST("/auth/register", controllers.CreateUser)
+	r.POST("/auth/login", controllers.LogUser)
 
 	// Routes protégées
 	protected := r.Group("/")
