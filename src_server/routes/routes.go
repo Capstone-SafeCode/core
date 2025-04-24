@@ -41,7 +41,10 @@ func SetupRouter() *gin.Engine {
 
 		protected.POST("/upload", controllers.UploadFile)
 		protected.POST("/analyse", controllers.Analyse)
+		protected.POST("/github/download", controllers.DownloadGitHubRepo)
 	}
+
+	r.POST("/logout", controllers.Logout)
 
 	return r
 }

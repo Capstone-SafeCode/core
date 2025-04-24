@@ -12,7 +12,7 @@ var OAuth2Config = &oauth2.Config{
 	ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 	ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 	RedirectURL:  "http://localhost:8080/auth/github/callback",
-	Scopes:       []string{"user:email"},
+	Scopes:       []string{"user:email", "repo"},
 	Endpoint:     github.Endpoint,
 }
 

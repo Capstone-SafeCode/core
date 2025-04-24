@@ -6,9 +6,10 @@ import (
 )
 
 type User struct {
-	ID       primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	Username string             `json:"username" binding:"required"`
-	Password string             `json:"password" binding:"required"`
+	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Username    string             `json:"username" binding:"required"`
+	Password    string             `json:"password" binding:"required"`
+	GitHubToken string             `json:"github_token,omitempty" bson:"github_token,omitempty"`
 }
 
 func (u *User) HashPassword() error {

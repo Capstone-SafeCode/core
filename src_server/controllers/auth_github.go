@@ -4,10 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"test_capstone/src_server/config"
+	"test_capstone/src_server/model"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/oauth2"
 )
 
@@ -48,11 +51,50 @@ func GitHubCallback(c *gin.Context) {
 		return
 	}
 
-	// Ici, vous pouvez stocker les informations de l'utilisateur dans votre base de données
-	// et créer une session pour l'utilisateur
+	// Créer un nouvel utilisateur avec les informations GitHub
+	githubUser := model.User{
+		Username:    user["login"].(string),
+		Password:    "",                // Pas de mot de passe pour les utilisateurs GitHub
+		GitHubToken: token.AccessToken, // Stocker le token GitHub
+	}
+
+	// Vérifier si l'utilisateur existe déjà
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var existingUser model.User
+	err = userCollection.FindOne(ctx, bson.M{"username": githubUser.Username}).Decode(&existingUser)
+	if err != nil {
+		// L'utilisateur n'existe pas, le créer
+		_, err = userCollection.InsertOne(ctx, githubUser)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la création de l'utilisateur"})
+			return
+		}
+		existingUser = githubUser
+	} else {
+		// Mettre à jour le token GitHub
+		_, err = userCollection.UpdateOne(ctx,
+			bson.M{"username": githubUser.Username},
+			bson.M{"$set": bson.M{"github_token": token.AccessToken}},
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la mise à jour du token"})
+			return
+		}
+		existingUser.GitHubToken = token.AccessToken
+	}
+
+	// Générer le token JWT
+	jwtToken, err := generateJWT(existingUser)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la génération du token"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Authentification réussie",
-		"user":    user,
+		"message": "Authentification GitHub réussie",
+		"token":   jwtToken,
+		"user":    existingUser,
 	})
 }
