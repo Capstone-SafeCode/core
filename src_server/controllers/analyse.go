@@ -1,16 +1,22 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	analyser "test_capstone/src_analyser"
 	parser "test_capstone/src_parser"
+	"test_capstone/src_server/database"
+	"test_capstone/src_server/model"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func LoadJsonFromResultFile(filepath string) ([]gin.H, error) {
@@ -56,11 +62,38 @@ func StartAnalyse(userName string, c *gin.Context) {
 	fmt.Println(listOfFiles)
 	resultJson := analyser.AnalyseList(listOfFiles)
 	fmt.Println(resultJson)
-	// if err != nil {
-	// 	log.Fatal("Start analyse request err:", err)
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Analysis failed"})
-	// 	return
-	// }
+
+	// Récupérer l'ID de l'utilisateur depuis le token
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	// Convertir l'ID en ObjectID
+	objID, err := primitive.ObjectIDFromHex(userID.(string))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	// Créer une nouvelle analyse
+	analysis := model.Analysis{
+		UserID:    objID,
+		Timestamp: primitive.NewDateTimeFromTime(time.Now()),
+		Results:   resultJson,
+	}
+
+	// Sauvegarder dans MongoDB
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err = database.DB.Collection("analyses").InsertOne(ctx, analysis)
+	if err != nil {
+		log.Printf("Error saving analysis: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save analysis history"})
+		return
+	}
 
 	c.JSON(http.StatusOK, resultJson)
 }
@@ -74,4 +107,42 @@ func Analyse(c *gin.Context) {
 	}
 
 	StartAnalyse(userName, c)
+}
+
+// GetAnalysisHistory récupère l'historique des analyses d'un utilisateur
+func GetAnalysisHistory(c *gin.Context) {
+	// Récupérer l'ID de l'utilisateur depuis le token
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	// Convertir l'ID en ObjectID
+	objID, err := primitive.ObjectIDFromHex(userID.(string))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	// Récupérer l'historique des analyses
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	cursor, err := database.DB.Collection("analyses").Find(ctx, bson.M{"user_id": objID})
+	if err != nil {
+		log.Printf("Error retrieving analysis history: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve analysis history"})
+		return
+	}
+	defer cursor.Close(ctx)
+
+	var analyses []model.Analysis
+	if err = cursor.All(ctx, &analyses); err != nil {
+		log.Printf("Error decoding analysis history: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode analysis history"})
+		return
+	}
+
+	c.JSON(http.StatusOK, analyses)
 }
