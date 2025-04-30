@@ -2,8 +2,12 @@
   "schema": {
     "dangerous_functions": [
       [
-        "return True",
-        ["value"]
+        "Eq",
+        ["ops.0._type"]
+      ],
+      [
+        "password",
+        ["left.id"]
       ]
     ],
     "safe_functions": [
@@ -14,14 +18,14 @@
     ]
   },
   "ToFixIt": {
-    "text": "Verify credentials properly using a secure authentication mechanism, such as password hashing and comparison with stored values."
+    "text": "Use secure password verification functions like `check_password()` instead of comparing plaintext passwords."
   },
   "Kind": {
     "text": "Improper Authentication (CWE-287)"
   },
   "Doc": {
-    "what_is_an_issues": "The function blindly returns True, allowing anyone to authenticate without verifying credentials.",
-    "how_can_i_fix_it": "Use secure authentication functions to check usernames and passwords against stored (hashed) credentials.",
+    "what_is_an_issues": "Using a direct comparison (==) for passwords is insecure and easily exploitable.",
+    "how_can_i_fix_it": "Use a secure password verification function that checks hashed values.",
     "more_info": "https://cwe.mitre.org/data/definitions/287.html"
   }
 }

@@ -32,22 +32,6 @@ down-api:
 
 re-api: build-api up-api
 
-# ========== MONGO ==========
-
-build-mongo:
-	docker-compose build mongo
-
-up-mongo:
-	docker-compose up -d mongo
-
-stop-mongo:
-	docker-compsoe stop mongo
-
-down-mongo:
-	docker-compose stop mongo
-
-re-mongo: build-mongo up-mongo
-
 # ========== LOGS / TERMINAL ==========
 
 logs:
@@ -55,6 +39,3 @@ logs:
 
 bash-api:
 	docker exec -it core-api /bin/sh
-
-mongo-shell:
-	docker exec -it mongo mongosh

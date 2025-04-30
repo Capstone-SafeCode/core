@@ -4,12 +4,24 @@
       [
         "cur.execute",
         ["value.func.value.id", "value.func.attr"]
+      ],
+      [
+        "query",
+        ["value.args.0.id"]
       ]
     ],
     "safe_functions": [
       [
         "cur.execute",
         ["value.func.value.id", "value.func.attr"]
+      ],
+      [
+        "query",
+        ["value.args.0.id"]
+      ],
+      [
+        "username",
+        ["value.args.1.elts.0.id"]
       ]
     ]
   },

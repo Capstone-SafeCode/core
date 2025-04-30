@@ -34,11 +34,14 @@ func RunBeforeAnalysis(resultJson *[]gin.H, astRaw interface{}, filename string,
 }
 
 // Extrait les noms des fonctions et leurs path avant de les envoyer à la fonction suivante
-func RunAnalysis(astRaw interface{}, functionsToAnalyse []interface{}, isVulnerable *bool, filename string, bootToSet bool) {
+func RunAnalysis(astRaw interface{}, functionsToAnalyse []interface{}, isVulnerable *bool, filename string, boolToSet bool) {
+	nbToFind := 0
+	nbFound := 0
+
 	for _, dFunc := range functionsToAnalyse {
 		dFuncList, ok := dFunc.([]interface{})
 		if !ok || len(dFuncList) < 2 {
-			fmt.Println("Error: incorrect format in DangerousFunctions")
+			fmt.Println("Error: incorrect format in DangerousFunctions/SafeFunctions")
 			continue
 		}
 
@@ -61,21 +64,29 @@ func RunAnalysis(astRaw interface{}, functionsToAnalyse []interface{}, isVulnera
 			}
 		}
 
-		analyzeAST(astRaw, functionName, dFunctionPath, isVulnerable, bootToSet)
+		nbToFind += len(SplitStringByDot(functionName))
+
+		nbFound += analyzeAST(astRaw, functionName, dFunctionPath)
+	}
+
+	if nbFound == nbToFind {
+		*isVulnerable = boolToSet
 	}
 }
 
 // Boucle sur les path et, si vrai, set isVulnerable au booléen demandé
-func analyzeAST(astRaw interface{}, functionName string, dFunctionPath []string, isVulnerable *bool, bootToSet bool) {
+func analyzeAST(astRaw interface{}, functionName string, dFunctionPath []string) int {
+	tempNb := 0
+
 	functionParts := SplitStringByDot(functionName)
 
 	for _, path := range dFunctionPath {
 		pathParts := SplitStringByDot(path)
 		if searchInAST(astRaw, functionParts, pathParts) {
-			*isVulnerable = bootToSet
-			return
+			tempNb++
 		}
 	}
+	return tempNb
 }
 
 // Boucle sur tous les body et applique le path demandé
@@ -86,19 +97,9 @@ func searchInAST(ast interface{}, functionParts []string, pathParts []string) bo
 
 	switch node := ast.(type) {
 	case map[string]interface{}:
-		for key, value := range node {
-			if key == "body" {
-				if bodyArray, ok := value.([]interface{}); ok {
-					for _, subAST := range bodyArray {
-						if searchInAST(subAST, functionParts, pathParts) {
-							return true
-						}
-					}
-				}
-			} else {
-				if searchInAST(value, functionParts, pathParts) {
-					return true
-				}
+		for _, value := range node {
+			if searchInAST(value, functionParts, pathParts) {
+				return true
 			}
 		}
 	case []interface{}:
@@ -118,11 +119,9 @@ func explorePath(ast interface{}, pathParts []string, functionParts []string) bo
 
 	for _, key := range pathParts {
 		nextNode := findInAST(currentNode, key)
-
 		if nextNode == nil {
 			return false
 		}
-
 		currentNode = nextNode
 	}
 
@@ -159,12 +158,21 @@ func matchFunction(ast interface{}, functionParts []string) bool {
 		}
 	}
 
-	// Cas spécial : si c’est un map et qu’il a une clé "id" contenant un des noms attendus
 	if nodeMap, ok := ast.(map[string]interface{}); ok {
 		if idVal, ok := nodeMap["id"]; ok {
 			if strID, ok := idVal.(string); ok {
 				for _, expected := range functionParts {
 					if strID == expected {
+						return true
+					}
+				}
+			}
+		}
+
+		if typeVal, ok := nodeMap["_type"]; ok {
+			if strType, ok := typeVal.(string); ok {
+				for _, expected := range functionParts {
+					if strType == expected {
 						return true
 					}
 				}
