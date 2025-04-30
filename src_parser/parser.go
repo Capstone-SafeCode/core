@@ -1,7 +1,6 @@
 package src_parser
 
 import (
-	"fmt"
 	"log"
 	"os"
 )
@@ -38,6 +37,6 @@ func ParseFolder(filepath string) []string {
 		filepathList = append(filepathList, filepath)
 		startSort(&finalFilepathList, filepathList, []string{})
 	}
-	fmt.Println(finalFilepathList)
+
 	return finalFilepathList
 }

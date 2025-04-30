@@ -37,3 +37,12 @@ func loadRules(filepath string) (SecurityRules, error) {
 
 	return rules, nil
 }
+
+func ContainsLine(lines []int, line int) bool {
+	for _, l := range lines {
+		if l == line {
+			return true
+		}
+	}
+	return false
+}
