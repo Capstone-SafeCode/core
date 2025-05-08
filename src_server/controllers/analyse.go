@@ -129,6 +129,9 @@ func GetAnalysisHistory(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	// Initialiser le tableau d'analyses
+	analyses := []model.Analysis{}
+
 	cursor, err := database.DB.Collection("analyses").Find(ctx, bson.M{"user_id": objID})
 	if err != nil {
 		log.Printf("Error retrieving analysis history: %v", err)
@@ -137,7 +140,6 @@ func GetAnalysisHistory(c *gin.Context) {
 	}
 	defer cursor.Close(ctx)
 
-	var analyses []model.Analysis
 	if err = cursor.All(ctx, &analyses); err != nil {
 		log.Printf("Error decoding analysis history: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode analysis history"})
