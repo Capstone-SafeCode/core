@@ -52,7 +52,6 @@ func getUploadsName(userName string) string {
 func StartAnalyse(userName string, c *gin.Context) {
 	uploadFolder := getUploadsName(userName)
 	uploadsPath := fmt.Sprintf("uploads/%s/%s/", userName, uploadFolder)
-
 	if uploadFolder == "" || userName == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No valid upload found"})
 		return

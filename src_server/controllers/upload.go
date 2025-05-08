@@ -33,7 +33,6 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 	uploadedFilePath := filepath.Join(uploadDir, header.Filename)
-
 	out, err := os.Create(uploadedFilePath)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save uploaded file"})

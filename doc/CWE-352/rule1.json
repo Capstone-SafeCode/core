@@ -3,7 +3,7 @@
     "dangerous_functions": [
       [
         "request.form",
-        ["value.func.value.id", "value.func.attr"]
+        ["value.value.value.id", "value.value.attr"]
       ]
     ],
     "safe_functions": [
