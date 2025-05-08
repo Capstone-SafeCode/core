@@ -92,9 +92,18 @@ func GitHubCallback(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Authentification GitHub réussie",
-		"token":   jwtToken,
-		"user":    existingUser,
-	})
+	// Définir le cookie avec le JWT
+	c.SetCookie(
+		"auth_token", // nom du cookie
+		jwtToken,     // valeur du token
+		3600,         // durée de vie en secondes (1 heure)
+		"/",          // chemin
+		"localhost",  // domaine
+		true,         // secure (HTTPS uniquement)
+		true,         // httpOnly (pas accessible en JS)
+	)
+
+	// Rediriger vers le frontend
+	frontendURL := "http://localhost:3000/app"
+	c.Redirect(http.StatusTemporaryRedirect, frontendURL)
 }
