@@ -94,13 +94,13 @@ func GitHubCallback(c *gin.Context) {
 
 	// Définir le cookie avec le JWT
 	c.SetCookie(
-		"auth_token", // nom du cookie
-		jwtToken,     // valeur du token
-		3600,         // durée de vie en secondes (1 heure)
-		"/",          // chemin
-		"localhost",  // domaine
-		true,         // secure (HTTPS uniquement)
-		true,         // httpOnly (pas accessible en JS)
+		"accessToken", // nom du cookie
+		jwtToken,      // valeur du token
+		3600,          // durée de vie en secondes (1 heure)
+		"/",           // chemin
+		"localhost",   // domaine
+		false,         // secure (HTTPS uniquement)
+		false,         // httpOnly (pas accessible en JS)
 	)
 
 	// Rediriger vers le frontend
