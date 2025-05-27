@@ -13,15 +13,15 @@
       ]
     ]
   },
-  "ToFixIt" : {
-    "text" : "Don't show an error"
+  "ToFixIt": {
+    "text": "Avoid exposing sensitive data in error messages, logs, or responses. Use generic messages and restrict access to internal details."
   },
-  "Kind" : {
-    "text" : "Leaked information"
+  "Kind": {
+    "text": "Information Exposure (CWE-200)"
   },
   "Doc": {
-    "what_is_an_issues": "Description de la vulnérabilité, du danger et de l'impact qu'elle représente",
-    "how_can_i_fix_it": "Exemple de code vulnérable, exemple de code sécurisé, description de comment ça fonctionne",
-    "more_info": "Source et CWE utilisées"
+    "what_is_an_issues": "The application reveals sensitive information to unauthorized users through error messages, logs, debug output, or API responses. This may include internal paths, stack traces, usernames, emails, or configuration data. Attackers can use this information to craft more precise attacks or gain insights into the system's architecture.",
+    "how_can_i_fix_it": "Do not display internal errors or stack traces to users. Log detailed errors securely on the backend, and show generic error messages on the frontend.\n\nVulnerable example:\n```python\nimport traceback\ntry:\n    do_sensitive_operation()\nexcept Exception:\n    print(traceback.format_exc())  # ❌ Leaks stack trace to user\n```\n\nSecure example:\n```python\nimport traceback, logging\ntry:\n    do_sensitive_operation()\nexcept Exception:\n    logging.warning(traceback.format_exc())  # ✅ Log internally\n    print(\"An unexpected error occurred. Please try again later.\")  # Generic message\n```",
+    "more_info": "https://cwe.mitre.org/data/definitions/200.html"
   }
 }
