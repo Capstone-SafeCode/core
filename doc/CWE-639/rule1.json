@@ -9,7 +9,7 @@
     "safe_functions": [
       [
         "user_owns_invoice",
-        ["value.func.id"]
+        ["test.operand.func.id"]
       ]
     ]
   },

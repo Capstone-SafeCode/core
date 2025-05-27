@@ -9,7 +9,7 @@
     "safe_functions": [
       [
         "current_user.is_admin",
-        ["value"]
+        ["test.value.id", "test.attr"]
       ]
     ]
   },

@@ -9,7 +9,7 @@
     "safe_functions": [
       [
         "str.isdigit",
-        ["value.func.attr"]
+        ["test.func.value.id", "test.func.attr"]
       ]
     ]
   },
